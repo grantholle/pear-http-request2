@@ -1,6 +1,12 @@
 <?php
+
+namespace Tests;
+
+use Pear\Http\Request2;
+use PHPUnit\Framework\TestCase;
+
 /**
- * Unit tests for HTTP_Request2 package
+ * Unit tests for Request2 package
  *
  * PHP version 5
  *
@@ -8,29 +14,26 @@
  *
  * This source file is subject to BSD 3-Clause License that is bundled
  * with this package in the file LICENSE and available at the URL
- * https://raw.github.com/pear/HTTP_Request2/trunk/docs/LICENSE
+ * https://raw.github.com/pear/Request2/trunk/docs/LICENSE
  *
  * @category  HTTP
- * @package   HTTP_Request2
+ * @package   Request2
  * @author    Alexey Borzov <avb@php.net>
  * @copyright 2008-2020 Alexey Borzov <avb@php.net>
  * @license   http://opensource.org/licenses/BSD-3-Clause BSD 3-Clause License
- * @link      http://pear.php.net/package/HTTP_Request2
+ * @link      http://pear.php.net/package/Request2
  */
-
-/** Sets up includes */
-require_once __DIR__ . '/TestHelper.php';
 
 /**
  * Mock observer
  */
-class HTTP_Request2_MockObserver implements SplObserver
+class MockObserver implements \SplObserver
 {
     public $calls = 0;
 
     public $event;
 
-    public function update (SplSubject $subject)
+    public function update (\SplSubject $subject)
     {
         $this->calls++;
         $this->event = $subject->getLastEvent();
@@ -38,14 +41,14 @@ class HTTP_Request2_MockObserver implements SplObserver
 }
 
 /**
- * Unit test for subject-observer pattern implementation in HTTP_Request2
+ * Unit test for subject-observer pattern implementation in Request2
  */
-class HTTP_Request2_ObserverTest extends PHPUnit_Framework_TestCase
+class ObserverTest extends TestCase
 {
     public function testSetLastEvent()
     {
-        $request  = new HTTP_Request2();
-        $observer = new HTTP_Request2_MockObserver();
+        $request  = new Request2();
+        $observer = new MockObserver();
         $request->attach($observer);
 
         $request->setLastEvent('foo', 'bar');
@@ -59,9 +62,9 @@ class HTTP_Request2_ObserverTest extends PHPUnit_Framework_TestCase
 
     public function testAttachOnlyOnce()
     {
-        $request   = new HTTP_Request2();
-        $observer  = new HTTP_Request2_MockObserver();
-        $observer2 = new HTTP_Request2_MockObserver();
+        $request   = new Request2();
+        $observer  = new MockObserver();
+        $observer2 = new MockObserver();
         $request->attach($observer);
         $request->attach($observer2);
         $request->attach($observer);
@@ -73,9 +76,9 @@ class HTTP_Request2_ObserverTest extends PHPUnit_Framework_TestCase
 
     public function testDetach()
     {
-        $request   = new HTTP_Request2();
-        $observer  = new HTTP_Request2_MockObserver();
-        $observer2 = new HTTP_Request2_MockObserver();
+        $request   = new Request2();
+        $observer  = new MockObserver();
+        $observer2 = new MockObserver();
 
         $request->attach($observer);
         $request->detach($observer2); // should not be a error
@@ -87,4 +90,3 @@ class HTTP_Request2_ObserverTest extends PHPUnit_Framework_TestCase
         $this->assertEquals(['name' => 'first', 'data' => null], $observer->event);
     }
 }
-?>

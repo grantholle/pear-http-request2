@@ -1,4 +1,15 @@
 <?php
+
+namespace Tests\Request2;
+
+use DateTime;
+use DateTimeZone;
+use Pear\Http\Request2\Adapters\Mock;
+use Pear\Http\Request2\CookieJar;
+use Pear\Http\Request2\Exceptions\LogicException;
+use Pear\Net\Url2;
+use PHPUnit\Framework\TestCase;
+
 /**
  * Unit tests for HTTP_Request2 package
  *
@@ -18,33 +29,30 @@
  * @link      http://pear.php.net/package/HTTP_Request2
  */
 
-/** Sets up includes */
-require_once dirname(__DIR__) . '/TestHelper.php';
-
 /**
- * Unit test for HTTP_Request2_CookieJar class
+ * Unit test for CookieJar class
  */
-class HTTP_Request2_CookieJarTest extends PHPUnit_Framework_TestCase
+class CookieJarTest extends TestCase
 {
    /**
     * Cookie jar instance being tested
-    * @var HTTP_Request2_CookieJar
+    * @var CookieJar
     */
     protected $jar;
 
-    protected function setUp()
+    protected function setUp(): void
     {
-        $this->jar = new HTTP_Request2_CookieJar();
+        $this->jar = new CookieJar();
     }
 
    /**
     * Test that we can't store junk "cookies" in jar
     *
     * @dataProvider invalidCookieProvider
-    * @expectedException HTTP_Request2_LogicException
     */
     public function testStoreInvalid($cookie)
     {
+        $this->expectException(LogicException::class);
         $this->jar->store($cookie);
     }
 
@@ -69,10 +77,10 @@ class HTTP_Request2_CookieJarTest extends PHPUnit_Framework_TestCase
     public function testRequest20401()
     {
         $this->jar->ignoreInvalidCookies(true);
-        $response = HTTP_Request2_Adapter_Mock::createResponseFromFile(
+        $response = Mock::createResponseFromFile(
             fopen(dirname(__DIR__) . '/_files/response_cookies', 'rb')
         );
-        $setter   = new Net_URL2('http://pecl.php.net/');
+        $setter   = new Url2('http://pecl.php.net/');
 
         $this->assertFalse($this->jar->addCookiesFromResponse($response, $setter));
         $this->assertCount(3, $this->jar->getAll());
@@ -198,7 +206,7 @@ class HTTP_Request2_CookieJarTest extends PHPUnit_Framework_TestCase
             $this->jar->store($cookies[$i] + ['expires' => null, 'name' => "cookie{$i}", 'value' => "cookie_{$i}_value"]);
         }
 
-        $this->assertEquals($expectedCount, count($this->jar->getMatching(new Net_URL2($url))));
+        $this->assertEquals($expectedCount, count($this->jar->getMatching(new Url2($url))));
     }
 
     public function testLongestPathFirst()
@@ -212,7 +220,7 @@ class HTTP_Request2_CookieJarTest extends PHPUnit_Framework_TestCase
         }
         $this->assertEquals(
             'foo=_specific_path_; foo=_specific_; foo=_',
-            $this->jar->getMatching(new Net_URL2('http://example.com/specific/path/file.php'), true)
+            $this->jar->getMatching(new Url2('http://example.com/specific/path/file.php'), true)
         );
     }
 
@@ -347,7 +355,7 @@ class HTTP_Request2_CookieJarTest extends PHPUnit_Framework_TestCase
                     'expires' => null,
                     'secure'  => false
                 ],
-                new Net_URL2('http://example.com/directory/file.php'),
+                new Url2('http://example.com/directory/file.php'),
                 [
                     'domain'  => 'example.com',
                     'path'    => '/directory/'
@@ -362,7 +370,7 @@ class HTTP_Request2_CookieJarTest extends PHPUnit_Framework_TestCase
                     'expires' => null,
                     'secure'  => false
                 ],
-                new Net_URL2('http://example.com/path/to/file.php'),
+                new Url2('http://example.com/path/to/file.php'),
                 [
                     'path'    => '/path/to/'
                 ]
@@ -376,7 +384,7 @@ class HTTP_Request2_CookieJarTest extends PHPUnit_Framework_TestCase
                     'expires' => null,
                     'secure'  => false
                 ],
-                new Net_URL2('http://example.com/another/file.php'),
+                new Url2('http://example.com/another/file.php'),
                 [
                     'domain'  => 'example.com'
                 ]
@@ -396,4 +404,3 @@ class HTTP_Request2_CookieJarTest extends PHPUnit_Framework_TestCase
         ];
     }
 }
-?>

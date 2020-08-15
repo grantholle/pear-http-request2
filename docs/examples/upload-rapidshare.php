@@ -6,7 +6,7 @@
  * Rapidshare API description: http://rapidshare.com/dev.html
  */
 
-require_once 'HTTP/Request2.php';
+require_once 'src/Request2.php';
 
 // You'll probably want to change this
 $filename = '/etc/passwd';

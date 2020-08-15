@@ -14,7 +14,7 @@ define('LIST_URL',    'https://publicsuffix.org/list/public_suffix_list.dat');
 /** Name of PHP file to write */
 define('OUTPUT_FILE', __DIR__ . '/public-suffix-list.php');
 
-require_once 'HTTP/Request2.php';
+require_once '../src/Request2.php';
 
 function buildSubdomain(&$node, $tldParts)
 {
@@ -56,7 +56,7 @@ function writeNode($fp, $valueTree, $key = null, $indent = 0)
 
 
 try {
-    $request  = new HTTP_Request2(LIST_URL, HTTP_Request2::METHOD_GET, [
+    $request  = new \Pear\Http\Request2(LIST_URL, \Pear\Http\Request2::METHOD_GET, [
         // Provide path to your CA file and change 'ssl_verify_peer' to true to enable peer validation
         // 'ssl_cafile' => '... path to your Certificate Authority file ...',
         'ssl_verify_peer' => false
@@ -100,4 +100,3 @@ foreach (array_filter(array_map('trim', explode("\n", $list))) as $line) {
 writeNode($fp, $tldTree);
 fwrite($fp, ";\n?>");
 fclose($fp);
-?>

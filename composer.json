@@ -1,38 +1,52 @@
 {
-    "name"        : "pear/http_request2",
-    "description" : "Provides an easy way to perform HTTP requests.",
-    "type"        : "library",
-    "keywords"    : [ "http", "request", "pear", "curl" ],
-    "homepage"    : "https://pear.php.net/package/HTTP_Request2",
-    "license"     : "BSD-3-Clause",
-    "authors"     : [
+    "name": "grantholle/pear-http-request2",
+    "description": "A port of pear/http_request2: Provides an easy way to perform HTTP requests.",
+    "type": "library",
+    "keywords": [
+        "http",
+        "request",
+        "pear",
+        "curl"
+    ],
+    "homepage": "https://github.com/grantholle/pear-http-request2",
+    "license": "BSD-3-Clause",
+    "authors": [
         {
-            "name"  : "Alexey Borzov",
-            "email" : "avb@php.net"
+            "name": "Alexey Borzov",
+            "email": "avb@php.net"
+        },
+        {
+            "name": "Grant Holle",
+            "homepage": "https://grantholle.com"
         }
     ],
     "support": {
-        "issues": "https://pear.php.net/bugs/search.php?cmd=display&package_name[]=HTTP_Request2",
-        "source": "https://github.com/pear/HTTP_Request2",
-        "docs":   "https://pear.php.net/manual/en/package.http.http-request2.php"
+        "issues": "https://github.com/grantholle/pear-http-request2/issues",
+        "source": "https://github.com/grantholle/pear-http-request2"
     },
-    "require"     : {
-        "php"                 : ">=5.6.0",
-        "pear/net_url2"       : "^2.2.0",
-        "pear/pear_exception" : "^1.0.0"
+    "require": {
+        "php": "^7.2",
+        "grantholle/pear-net-url2": "^3.0",
+        "ext-zlib": "*",
+        "ext-mbstring": "*",
+        "ext-fileinfo": "*",
+        "ext-curl": "*"
     },
-    "require-dev": {
-        "phpunit/phpunit"     : "^3.7|^4.8|^5.7"
-    },
-    "suggest"     : {
-        "ext-fileinfo" : "Adds support for looking up mime-types using finfo.",
-        "ext-zlib"     : "Allows handling gzip compressed responses.",
-        "ext-curl"     : "Allows using cURL as a request backend.",
-        "ext-openssl"  : "Allows handling SSL requests when not using cURL."
+    "suggest": {
+        "ext-openssl": "Allows handling SSL requests when not using cURL."
     },
     "autoload": {
-        "psr-0": {
-            "HTTP_Request2" : ""
+        "psr-4": {
+            "Pear\\Http\\": "src"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8",
+        "ext-json": "*"
     }
 }

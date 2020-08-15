@@ -9786,4 +9786,3 @@ return [
  ],
  'zuerich' => true
 ];
-?>

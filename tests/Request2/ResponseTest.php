@@ -1,4 +1,11 @@
 <?php
+
+namespace Tests\Request2;
+
+use Pear\Http\Request2\Exceptions\MessageException;
+use Pear\Http\Request2\Response;
+use PHPUnit\Framework\TestCase;
+
 /**
  * Unit tests for HTTP_Request2 package
  *
@@ -18,37 +25,31 @@
  * @link      http://pear.php.net/package/HTTP_Request2
  */
 
-/** Sets up includes */
-require_once dirname(__DIR__) . '/TestHelper.php';
-
 /**
- * Unit test for HTTP_Request2_Response class
+ * Unit test for Response class
  */
-class HTTP_Request2_ResponseTest extends PHPUnit_Framework_TestCase
+class ResponseTest extends TestCase
 {
-   /**
-    *
-    * @expectedException HTTP_Request2_MessageException
-    */
     public function testParseStatusLine()
     {
-        $response = new HTTP_Request2_Response('HTTP/1.1 200 OK');
+        $this->expectException(MessageException::class);
+        $response = new Response('HTTP/1.1 200 OK');
         $this->assertEquals('1.1', $response->getVersion());
         $this->assertEquals(200, $response->getStatus());
         $this->assertEquals('OK', $response->getReasonPhrase());
 
-        $response2 = new HTTP_Request2_Response('HTTP/1.2 222 Nishtyak!');
+        $response2 = new Response('HTTP/1.2 222 Nishtyak!');
         $this->assertEquals('1.2', $response2->getVersion());
         $this->assertEquals(222, $response2->getStatus());
         $this->assertEquals('Nishtyak!', $response2->getReasonPhrase());
 
-        $response3 = new HTTP_Request2_Response('Invalid status line');
+        $response3 = new Response('Invalid status line');
     }
 
     public function testParseHeaders()
     {
         $response = $this->readResponseFromFile('response_headers');
-        $this->assertEquals(7, count($response->getHeader()));
+        $this->assertCount(7, $response->getHeader());
         $this->assertEquals('PHP/6.2.2', $response->getHeader('X-POWERED-BY'));
         $this->assertEquals('text/html; charset=windows-1251', $response->getHeader('cOnTeNt-TyPe'));
         $this->assertEquals('accept-charset, user-agent', $response->getHeader('vary'));
@@ -58,7 +59,7 @@ class HTTP_Request2_ResponseTest extends PHPUnit_Framework_TestCase
     {
         $response = $this->readResponseFromFile('response_cookies');
         $cookies  = $response->getCookies();
-        $this->assertEquals(4, count($cookies));
+        $this->assertCount(4, $cookies);
         $expected = [
             ['name' => 'foo', 'value' => 'bar', 'expires' => null,
                   'domain' => null, 'path' => null, 'secure' => false],
@@ -74,17 +75,14 @@ class HTTP_Request2_ResponseTest extends PHPUnit_Framework_TestCase
         }
     }
 
-   /**
-    *
-    * @expectedException HTTP_Request2_MessageException
-    */
     public function testGzipEncoding()
     {
+        $this->expectException(MessageException::class);
         $response = $this->readResponseFromFile('response_gzip');
         $this->assertEquals('0e964e9273c606c46afbd311b5ad4d77', md5($response->getBody()));
 
         $response = $this->readResponseFromFile('response_gzip_broken');
-        $body = $response->getBody();
+        $response->getBody();
     }
 
     public function testDeflateEncoding()
@@ -108,7 +106,7 @@ class HTTP_Request2_ResponseTest extends PHPUnit_Framework_TestCase
     protected function readResponseFromFile($filename)
     {
         $fp       = fopen(dirname(__DIR__) . '/_files/' . $filename, 'rb');
-        $response = new HTTP_Request2_Response(fgets($fp));
+        $response = new Response(fgets($fp));
         do {
             $headerLine = fgets($fp);
             $response->parseHeaderLine($headerLine);
@@ -120,4 +118,3 @@ class HTTP_Request2_ResponseTest extends PHPUnit_Framework_TestCase
         return $response;
     }
 }
-?>

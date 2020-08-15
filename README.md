@@ -27,7 +27,7 @@ Pull requests are welcome.
 ## Basic usage
 
 ```PHP
-require_once 'HTTP/Request2.php';
+require_once 'src/Request2.php';
 
 $request = new HTTP_Request2('http://pear.php.net/', HTTP_Request2::METHOD_GET);
 try {
