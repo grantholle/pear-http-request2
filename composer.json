@@ -25,7 +25,7 @@
         "source": "https://github.com/grantholle/pear-http-request2"
     },
     "require": {
-        "php": "^7.2",
+        "php": "^7.2|^8.0",
         "grantholle/pear-net-url2": "^3.0",
         "ext-zlib": "*",
         "ext-mbstring": "*",
